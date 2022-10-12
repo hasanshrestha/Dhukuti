@@ -89,7 +89,7 @@ WSGI_APPLICATION = "PdfSearch.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "dhukutiDB",
+        "NAME": "dhukutidb",
         "USER": "dhukuti_admin",
         "PASSWORD": "admin@123",
         "HOST": "localhost",
