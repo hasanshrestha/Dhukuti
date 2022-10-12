@@ -1,0 +1,15 @@
+{%extends 'layout.html'%}
+{% load static %}
+
+{% block main %}
+<form action="{% url 'fileUpload' %}" method="POST" enctype="multipart/form-data">
+    <div class="form-group" style="width: 30rem;">
+        {% csrf_token %}
+        {{ form.as_p }}
+    </div>
+    {{msg}}
+    <br>
+    <input type="submit" value="SAVE" class="btn btn-primary">
+</form>
+
+{% endblock %}

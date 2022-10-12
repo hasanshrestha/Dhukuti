@@ -1,0 +1,88 @@
+{%extends 'layout.html'%}
+{% load static %}
+
+{% block main %}
+<html lang="en">
+
+<form action="{% url 'searchFiles' %}">
+    <input type="text" name="search" placeholder="Enter Text To Search" value="{{searchKey}}">
+    <input type="submit" value="Search">
+</form>
+<!-- <div class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+    <form action="{% url 'searchFiles' %}"
+        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+        <div class="input-group">
+            <input type="text" name="search" value="{{searchKey}}" class="form-control bg-light border-0 small"
+                placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <input type="submit" class="fas fa-search fa-sm">
+            </div>
+        </div>
+    </form>
+</div> -->
+<br>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for value in data %}
+    <div class="col">
+        <div class="card h-100">
+            <iframe id="myFrame" src="/static/js/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/static/{{value.file}}"
+                style="width:350px; height:400px;" frameborder="0"></iframe>
+            <!-- <img src="img/WhatsApp Image 2022-09-26 at 13.12.01.jpeg" class="card-img-top" alt="..."> -->
+            <div class="card-body">
+                <h5 class="card-title">{{value.title}}</h5>
+                <!-- <p class="card-text">This is a wider card with supporting text below as a natural
+                    lead-in to additional content. This content is a little bit longer.</p> -->
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">
+                    <a href="{{value.file.url}}" download class="btn btn-primary">Download</a>
+                    <a href="/static/js/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/static/{{value.file}}#search={{searchKey}}"
+                        target="_blank" class="btn btn-primary">View PDF</a>
+                </small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <input type="text" value="{{searchKey}}" hidden id="searchKey">
+    <input type="text" value="{{counter}}" hidden id="counter">
+</div>
+
+
+<script src="{% static 'js/pdfjs/build/pdf.js' %}"></script>
+<script src="{% static 'js/pdfjs/web/viewer.js' %}"></script>
+<script>
+    searchKey = $('#searchKey').val();
+
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    var c = url.searchParams.get("search");
+
+    $(document).ready(function () {
+        searchKey = $('#searchKey').val();
+        counter = $('#counter').val();
+
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var c = url.searchParams.get("search");
+
+        function wtfMan(c, i) {
+            window.frames[i].PDFViewerApplication.findBar.open();
+            window.frames[i].PDFViewerApplication.findBar.findField.value = c;
+            window.frames[i].PDFViewerApplication.findBar.highlightAll.checked = true;
+            window.frames[i].PDFViewerApplication.findBar.entireWord.checked = true;
+            window.frames[i].PDFViewerApplication.findBar.findNextButton.click();
+            //window.frames[i].PDFViewerApplication.findBar.close();
+        }
+        setTimeout(function () {
+            for (let i = 0; i < counter; i++) {
+                wtfMan(searchKey, i);
+            }
+        }, 3000);
+    });
+
+</script>
+
+</html>
+
+{% endblock %}
