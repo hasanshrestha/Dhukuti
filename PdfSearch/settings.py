@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-o(s^0c6r2&zns3$4n6dedreg$zwfpx3($+2-=ung0g(())v^pg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["67.205.174.129", "127.0.0.1"]
+ALLOWED_HOSTS = ["67.205.174.129"]
 
 
 # Application definition
@@ -134,11 +134,11 @@ USE_TZ = True
 
 
 STATIC_URL = "/static/"
-# MEDIA_URL = "/media/"
+MEDIA_URL = "/media/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # to upload in folder
-MEDIA_ROOT = os.path.join(BASE_DIR, "static")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 # Default primary key field type
