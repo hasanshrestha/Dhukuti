@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-o(s^0c6r2&zns3$4n6dedreg$zwfpx3($+2-=ung0g(())v^pg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["67.205.174.129"]
+ALLOWED_HOSTS = ["67.205.174.129", "127.0.0.1"]
 
 
 # Application definition
@@ -133,12 +133,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 
-STATIC_URL = "static/"
-MEDIA_URL = "media/"
+STATIC_URL = "/static/"
+# MEDIA_URL = "/media/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # to upload in folder
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "static")
 
 
 # Default primary key field type

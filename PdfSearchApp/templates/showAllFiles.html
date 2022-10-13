@@ -26,18 +26,17 @@
     {% for value in data %}
     <div class="col">
         <div class="card h-100">
-            <iframe id="myFrame" src="/static/js/pdfjs/web/viewer.html?file=http://67.205.174.129/media/{{value.file}}"
+            <iframe id="myFrame" src="/static/js/pdfjs/web/viewer.html?file=http://67.205.174.129/static/{{value.file}}"
                 style="width:350px; height:400px;" frameborder="0"></iframe>
-            <!-- <img src="img/WhatsApp Image 2022-09-26 at 13.12.01.jpeg" class="card-img-top" alt="..."> -->
+            <!-- <iframe class="doc" src="https://docs.google.com/gview?url=http://67.205.174.129/static/{{value.file}}"
+                style="width:350px; height:400px;"></iframe> -->
             <div class="card-body">
                 <h5 class="card-title">{{value.title}}</h5>
-                <!-- <p class="card-text">This is a wider card with supporting text below as a natural
-                    lead-in to additional content. This content is a little bit longer.</p> -->
             </div>
             <div class="card-footer">
                 <small class="text-muted">
                     <a href="{{value.file.url}}" download class="btn btn-primary">Download</a>
-                    <a href="/static/js/pdfjs/web/viewer.html?file=http://67.205.174.129/media/{{value.file}}#search={{searchKey}}"
+                    <a href="/static/js/pdfjs/web/viewer.html?file=http://67.205.174.129/static/{{value.file}}#search={{searchKey}}"
                         target="_blank" class="btn btn-primary">View PDF</a>
                 </small>
             </div>
