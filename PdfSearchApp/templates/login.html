@@ -1,0 +1,60 @@
+{%extends 'layout.html'%}
+{% load static %}
+
+{% block main %}
+<h3 class="text-center">Login</h3>
+<form method="POST" action="">
+  {% csrf_token %}
+  <section class="vh-100" style="background-color: #508bfc;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+          <div class="card shadow-2-strong" style="border-radius: 1rem;">
+            <div class="card-body p-5 text-center">
+              <div class="form-outline mb-4">
+                <input type="text" class="form-control" id="username" name="username" required autofocus>
+                <div>
+                  {% for field in login_form %}
+                    {% if field.label == "Username" %}
+                      {% for error in field.errors %}
+                        <p style="color: red;">{{ error }}</p>
+                      {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <label class="form-label" for="username">Username</label>
+              </div>
+
+              <div class="form-outline mb-4">
+                <input type="password" class="form-control" id="password" name="password" required>
+                <div>
+                  {% for field in login_form %}
+                    {% if field.label == "Password" %}
+                      {% for error in field.errors %}
+                        <p style="color: red;">{{ error }}</p>
+                      {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <label class="form-label" for="typePasswordX-2">Password</label>
+              </div>
+
+              <div class="row d-flex justify-content-center" class="text-center">
+                <input type="submit" name="Login User">
+              </div>
+              <hr class="my-4">
+              <a href="/register/">New user??</a>
+              {% if login_form.non_field_errors %}
+              <div style="color: red;">
+                <p>{{ login_form.non_field_errors }}</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</form>
+
+{% endblock %}

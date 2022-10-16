@@ -1,0 +1,13 @@
+asgiref
+backports.zoneinfo==0.2.1
+Django
+gunicorn==20.1.0
+packaging==21.3
+Pillow
+psycopg2==2.9.3
+psycopg2-binary==2.9.4
+pyparsing
+PyPDF2==2.10.9
+pytesseract
+sqlparse==0.4.2
+typing-extensions
