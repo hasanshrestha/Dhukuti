@@ -140,6 +140,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # to upload in folder
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+FILE_URL = "/"
+FILE_ROOT = os.path.join(BASE_DIR)
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

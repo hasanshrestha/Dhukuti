@@ -2,14 +2,95 @@
 {% load static %}
 
 {% block main %}
-<form action="{% url 'fileUpload' %}" method="POST" enctype="multipart/form-data">
+<form action="{% url 'fileUpload' %}" method="POST" enctype="multipart/form-data" id="upload_form">
     <div class="form-group" style="width: 30rem;">
         {% csrf_token %}
         {{ form.as_p }}
     </div>
     {{msg}}
+
+    <div class="d-none" id="pleasewait">
+        <p>Uploading...Please Wait..</p>
+        <div class="container progress d-none" id="progress" style="margin-left:0;width:400px">
+
+        </div>
+    </div>
     <br>
     <input type="submit" value="SAVE" class="btn btn-primary">
+    <br>
+    <p id="message"></p>
 </form>
+</br>
+
+<script>
+    const uploadForm = document.getElementById('upload_form');
+    const input_file = document.getElementById('id_file');
+    const progress_bar = document.getElementById('progress');
+
+    $('#id_file').change(function () {
+        if (this.files.length > 10) {
+            $('#message').text("Select Not More than 10 files.");
+            uploadForm.reset();
+        }
+    });
+
+    $("#upload_form").submit(function (e) {
+        e.preventDefault();
+        $form = $(this)
+        var formData = new FormData(this);
+
+        let count = 0;
+        for (let i = 0; i < input_file.length; i++) {
+            count++;
+            formData.append("file", input_file[i]);
+        }
+
+        const media_data = input_file.files[0];
+        if (media_data != null) {
+            console.log(media_data);
+            //progress_bar.classList.remove("not-visible");
+            $('#pleasewait').removeClass('d-none');
+            $('#progress').removeClass('d-none');
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "fileUpload" %}',
+            data: formData,
+            dataType: 'json',
+            beforeSend: function () {
+
+            },
+            xhr: function () {
+                const xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener('progress', e => {
+                    if (e.lengthComputable) {
+                        const percentProgress = (e.loaded / e.total) * 100;
+                        console.log(percentProgress);
+                        progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success" 
+                role="progressbar" style="width:350px" aria-valuenow="${percentProgress}" aria-valuemin="0" 
+                aria-valuemax="400"></div>`
+                    }
+                });
+                return xhr
+            },
+            success: function (response) {
+                console.log(response);
+                uploadForm.reset()
+                //progress_bar.classList.add('not-visible')
+                $('#pleasewait').addClass('d-none');
+                $('#progress').addClass('d-none');
+                $('#message').text("File Uploaded Successfully!!");
+            },
+            error: function (err) {
+                console.log(err);
+            },
+            cache: false,
+            contentType: false,
+            processData: false,
+        });
+    });
+
+</script>
 
 {% endblock %}

@@ -11,3 +11,4 @@ PyPDF2==2.10.9
 pytesseract==0.3.10
 sqlparse==0.4.2
 typing-extensions==4.3.0
+docx2pdf==0.1.8
