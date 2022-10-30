@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("PdfSearchApp.urls")),
+    path("home/", include("PdfSearchApp.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.FILE_URL, document_root=settings.FILE_ROOT)

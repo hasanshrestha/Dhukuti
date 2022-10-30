@@ -51,27 +51,37 @@ def fileUpload(request):
                     file_path = (
                         os.path.join(settings.BASE_DIR, "media") + "/" + new_file_name
                     )
-
+                    output_dir = (
+                        os.path.join(settings.BASE_DIR, "media") + "/" + "files" + "/"
+                    )
                     # filePATH = os.path.join(settings.BASE_DIR, "media") + "/wordfiles/"
                     print("File Path: ", file_path)
+                    print("Output File Path: ", output_dir)
 
                     # convert
                     output = subprocess.check_output(
-                        ["libreoffice", "--convert-to", "pdf", file_path],
+                        [
+                            "libreoffice",
+                            "--convert-to",
+                            "pdf",
+                            "--outdir",
+                            output_dir,
+                            file_path,
+                        ],
                     )
                     print(output)
 
                     # extract text from pdf
                     pdf_file_path = (
-                        os.path.join(settings.BASE_DIR)
-                        + "/"
+                        os.path.join(settings.BASE_DIR, "media")
+                        + "/files/"
                         + new_file_name[:-5]
                         + ".pdf"
                     )
                     print("Pdf File Path: ", pdf_file_path)
                     title = file.name
                     description = ""
-                    file = new_file_name[:-5] + ".pdf"
+                    file = "files/" + new_file_name[:-5] + ".pdf"
 
                     pdfObj = PyPDF2.PdfFileReader(pdf_file_path)
                     for i in range(0, pdfObj.getNumPages()):
@@ -81,7 +91,7 @@ def fileUpload(request):
                         title=title[:-5],
                         description=description,
                         file=file,
-                        filetype="word",
+                        filetype="pdf",
                     )
                     newdoc.save()
                     # msg = "File Uploaded Successfully!!"
@@ -130,6 +140,7 @@ def fileUpload(request):
 
 def showAllFiles(request):
     data = Files.objects.all()
+    print("Counter: ", data.count())
     return render(request, "showAllFiles.html", {"data": data})
 
 

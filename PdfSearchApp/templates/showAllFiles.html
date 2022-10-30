@@ -24,14 +24,11 @@
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for value in data %}
-    {% if value.filetype == "word" %}
-    <div class="col">
+    <!-- {% if value.filetype == "word" %} -->
+    <!-- <div class="col">
         <div class="card h-100">
-            <iframe id="myFrame" src="/static/js/pdfjs/web/viewer.html?file=http://67.205.174.129/{{value.file}}"
+            <iframe id="myFrame" src="/static/js/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/{{value.file}}"
                 style="width:350px; height:400px;" frameborder="0"></iframe>
-
-            <!-- <iframe class="doc" src="https://docs.google.com/gview?url=http://67.205.174.129/static/{{value.file}}"
-                style="width:350px; height:400px;"></iframe> -->
 
             <div class="card-body">
                 <h5 class="card-title">{{value.title}}</h5>
@@ -39,16 +36,17 @@
             <div class="card-footer">
                 <small class="text-muted">
                     <a href="http://67.205.174.129/{{value.file}}" download class="btn btn-primary">Download</a>
-                    <a href="/static/js/pdfjs/web/viewer.html?file=http://67.205.174.129/{{value.file}}#search={{searchKey}}"
+                    <a href="/static/js/pdfjs/web/viewer.html?file=http://127.0.0.1:8000/{{value.file}}#search={{searchKey}}"
                         target="_blank" class="btn btn-primary">View PDF</a>
                 </small>
             </div>
         </div>
-    </div>
-    {% else %}
+    </div> -->
+    <!-- {% else %} -->
     <div class="col">
         <div class="card h-100">
-            <iframe id="myFrame" src="/static/js/pdfjs/web/viewer.html?file=http://67.205.174.129/media/{{value.file}}"
+            <iframe id="myFrame"
+                src="/static/js/pdfjs/web/viewer.html?file=http://http://67.205.174.129/media/{{value.file}}"
                 style="width:350px; height:400px;" frameborder="0"></iframe>
 
             <div class="card-body">
@@ -57,13 +55,13 @@
             <div class="card-footer">
                 <small class="text-muted">
                     <a href="{{value.file.url}}" download class="btn btn-primary">Download</a>
-                    <a href="/static/js/pdfjs/web/viewer.html?file=http://67.205.174.129/media/{{value.file}}#search={{searchKey}}"
+                    <a href="/static/js/pdfjs/web/viewer.html?file=http://http://67.205.174.129/media/{{value.file}}#search={{searchKey}}"
                         target="_blank" class="btn btn-primary">View PDF</a>
                 </small>
             </div>
         </div>
     </div>
-    {% endif %}
+    <!-- {% endif %} -->
 
     {% endfor %}
     <input type="text" value="{{searchKey}}" hidden id="searchKey">
