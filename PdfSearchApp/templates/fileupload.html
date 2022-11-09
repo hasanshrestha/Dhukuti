@@ -3,29 +3,357 @@
 
 {% block main %}
 <form action="{% url 'fileUpload' %}" method="POST" enctype="multipart/form-data" id="upload_form">
-    <div class="form-group" style="width: 30rem;">
-        {% csrf_token %}
-        {{ form.as_p }}
-    </div>
-    {{msg}}
-
-    <div class="d-none" id="pleasewait">
-        <p>Uploading...Please Wait..</p>
-        <div class="container progress d-none" id="progress" style="margin-left:0;width:400px">
+    <div class="form-group mb-3 col-6">
+        <div class="custom-file">
+            {% csrf_token %}
+            <!-- {{ form.as_p }} -->
+            <input type="file" name="file" class="custom-file-input" id="id_file" multiple="multiple"
+                accept=".pdf,.docx,.doc,.ppt,.jpeg,.jpg,.png" oninput="input_filename();">
+            <label for="file_input" id="file_input_label" class="custom-file-label">Select Files</label>
 
         </div>
     </div>
-    <br>
-    <input type="submit" value="SAVE" class="btn btn-primary">
+    <!-- <input type="submit" value="SAVE" class="btn btn-primary"> -->
+    <button type="submit" id="upload_btn" class="btn btn-primary">Upload</button>
+    <button class="btn btn-primary d-none" id="loading_btn" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden=""></span>
+        Uploading...
+    </button>
     <br>
     <p id="message"></p>
+
+
+    <div id="progress_wrapper" class="d-none">
+        <div class="progress mb-3">
+            <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0"
+                aria-valuemax="100"></div>
+        </div>
+        <label id="progress_status">0% uploaded</label>
+    </div>
+
+    <div id="alert_wrapper0">
+    </div>
+    <div id="alert_wrapper1">
+    </div>
+    <div id="alert_wrapper2">
+    </div>
+    <div id="alert_wrapper3">
+    </div>
+    <div id="alert_wrapper4">
+    </div>
+    <div id="alert_wrapper5">
+    </div>
+    <div id="alert_wrapper6">
+    </div>
+    <div id="alert_wrapper7">
+    </div>
+    <div id="alert_wrapper8">
+    </div>
+    <div id="alert_wrapper9">
+    </div>
+
 </form>
 </br>
 
+<!-- <div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="mb-3 mt-3">
+                <h2 class="mb-3" style="font-weight:300px;">Upload</h2>
+                <form action="{% url 'fileUpload' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <div class="custom-file">
+                            <input type="file" name="file" class="custom-file-input" id="file_input"
+                                oninput="input_filename();">
+                            <label for="file_input" id="file_input_label" class="custom-file-label">Select File</label>
+
+                        </div>
+                    </div>
+
+                    <button onclick="upload(`http://127.0.0.1:8000/fileUpload/`)" id="upload_btn"
+                        class="btn btn-primary">Upload</button>
+                </form>
+                <button class="btn btn-primary d-none" id="loading_btn" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden=""></span>
+                    Uploading...
+                </button>
+
+                <button class="btn btn-secondary d-none" id="cancel_btn" type="button">Cancel</button>
+
+            </div>
+
+            <div id="progress_wrapper" class="d-none">
+                <label id="progress_status">0% uploaded</label>
+                <div class="progress mb-3">
+                    <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0"
+                        aria-valuemax="100"></div>
+                </div>
+            </div>
+
+            <div id="alert_wrapper">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <script>
-    const uploadForm = document.getElementById('upload_form');
+    var progress = document.getElementById("progress");
+    var progress_wrapper = document.getElementById("progress_wrapper");
+    var progress_status = document.getElementById("progress_status");
+
+    var upload_btn = document.getElementById("upload_btn");
+    var loading_btn = document.getElementById("loading_btn");
+    var cancel_btn = document.getElementById("cancel_btn");
+
+    var alert_wrapper = document.getElementById("alert_wrapper");
+    var input = document.getElementById("file_input");
+    var file_input_label = document.getElementById("file_input_label");
+
+    function show_alert(message, alert) {
+        alert_wrapper.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+    };
+
+    function input_filename() {
+        file_input_label.innerText = input.files[0].name;
+    }
+
+    function upload(url) {
+        if (!input.value) {
+            show_alert("No File Selected", "warning");
+            return;
+        }
+
+        var data = new FormData();
+        var request = new XMLHttpRequest();
+        request.responseType = "json";
+        alert_wrapper.innerHTML = "";
+        input.disabled = true;
+        upload_btn.classList.add("d-none");
+        loading_btn.classList.remove("d-none");
+        cancel_btn.classList.remove("d-none");
+        progress_wrapper.classList.remove("d-none");
+
+        debugger;
+        var file = input.files[0];
+        var filename = file.name;
+        var filesize = file.size;
+        document.cooke = `filesize=${filesize}`;
+
+        data.append("file", file);
+        data.append("text", "testing");
+
+        request.upload.addEventListener("progress", function (e) {
+            var loaded = e.loaded;
+            var total = e.total;
+
+            var percentage_complete = (loaded / total) * 100;
+
+            progress.setAttribute("style", `width: ${Math.floor(percentage_complete)}%`);
+
+            progress_status.innerText = `${Math.floor(percentage_complete)}% uploaded`;
+
+        })
+
+        request.addEventListener("load", function (e) {
+            if (request.status == 200) {
+                show_alert(`${request.response.message}`, "success");
+            }
+            else {
+                show_alert("Error Uploading File", "danger");
+            }
+
+            reset();
+
+        })
+
+        request.addEventListener("error", function (e) {
+            reset();
+
+            show_alert("Error Uploading File", "danger");
+        })
+
+        request.addEventListener("abort", function (e) {
+            reset();
+
+            show_alert("Upload Cancelled", "primary");
+        })
+
+        request.open("POST", url, true);
+        request.send(data);
+
+        cancel_btn.addEventListener("click", function (e) {
+            request.abort();
+        })
+
+    }
+
+
+    function reset() {
+        input.value = null;
+        input.disabled = false;
+        cancel_btn.classList.add("d-none");
+        loading_btn.classList.add("d-none");
+        upload_btn.classList.remove("d-none");
+        progress_wrapper.classList.add("d-none");
+        progress.setAttribute("style", "width: 0%");
+        file_input_label.innerText = "Select File";
+    }
+
+</script> -->
+
+
+<script>
+    //const progressBox = document.getElementById('progress-box')
+
+    var progress = document.getElementById("progress");
+    var progress_wrapper = document.getElementById("progress_wrapper");
+    var progress_status = document.getElementById("progress_status");
+
+    var alert_wrapper0 = document.getElementById("alert_wrapper0");
+    var alert_wrapper1 = document.getElementById("alert_wrapper1");
+    var alert_wrapper2 = document.getElementById("alert_wrapper2");
+    var alert_wrapper3 = document.getElementById("alert_wrapper3");
+    var alert_wrapper4 = document.getElementById("alert_wrapper4");
+    var alert_wrapper5 = document.getElementById("alert_wrapper5");
+    var alert_wrapper6 = document.getElementById("alert_wrapper6");
+    var alert_wrapper7 = document.getElementById("alert_wrapper7");
+    var alert_wrapper8 = document.getElementById("alert_wrapper8");
+    var alert_wrapper9 = document.getElementById("alert_wrapper9");
+    // var input = document.getElementById("file_input");
+    // var file_input_label = document.getElementById("file_input_label");
+
+    var upload_btn = document.getElementById("upload_btn");
+    var loading_btn = document.getElementById("loading_btn");
+
     const input_file = document.getElementById('id_file');
-    const progress_bar = document.getElementById('progress');
+    const uploadForm = document.getElementById('upload_form');
+
+    function show_alert(message, alert, n) {
+        if (n == 0) {
+            alert_wrapper0.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+        else if (n == 1) {
+            alert_wrapper1.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+        else if (n == 2) {
+            alert_wrapper2.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+        else if (n == 3) {
+            alert_wrapper3.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+        else if (n == 4) {
+            alert_wrapper4.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+        else if (n == 5) {
+            alert_wrapper5.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+        else if (n == 6) {
+            alert_wrapper6.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+        else if (n == 7) {
+            alert_wrapper7.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+        else if (n == 8) {
+            alert_wrapper8.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+        else {
+            alert_wrapper9.innerHTML = `
+        <div class="alert alert-${alert} alert-dismissable fade show" role="alert">
+            <span>${message}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+        }
+
+    };
+
+    function input_filename() {
+        if (input_file.files.length > 1) {
+            file_input_label.innerText = "Multiple files selected"
+        }
+        else {
+            file_input_label.innerText = input_file.files[0].name;
+        }
+    }
+
+    // const uploadForm = document.getElementById('upload_form');
+    //const input_file = document.getElementById('id_file');
+    // const progress_bar = document.getElementById('progress');
 
     $('#id_file').change(function () {
         if (this.files.length > 10) {
@@ -36,22 +364,35 @@
 
     $("#upload_form").submit(function (e) {
         e.preventDefault();
-        $form = $(this)
-        var formData = new FormData(this);
 
-        let count = 0;
-        for (let i = 0; i < input_file.length; i++) {
-            count++;
-            formData.append("file", input_file[i]);
+        let i = 0;
+        let n = input_file.files.length;
+        let x = 0;
+        //let file = [];
+        //const inputFile = document.getElementById('file-input');
+
+        // Iterating through each file and sending AJAX request
+        var formData = new FormData();
+        // for (const file of input_file.files) {
+        //     debugger;
+        //     //var formdata = new FormData(document.getElementById("file-catcher"));
+
+        //     formData.append("file", file[i]);
+        //     i++;
+        // }
+
+        for (i = 0; i < input_file.files.length; i++) {
+            formData.append("file", input_file.files[i]);
         }
 
-        const media_data = input_file.files[0];
-        if (media_data != null) {
-            console.log(media_data);
-            //progress_bar.classList.remove("not-visible");
-            $('#pleasewait').removeClass('d-none');
-            $('#progress').removeClass('d-none');
-        }
+        // if (file != null) {
+        //     console.log(file);
+
+        //     progress_wrapper.classList.remove("d-none");
+
+        //     upload_btn.classList.add("d-none");
+        //     loading_btn.classList.remove("d-none");
+        // }
 
         $.ajax({
             type: 'POST',
@@ -59,36 +400,165 @@
             data: formData,
             dataType: 'json',
             beforeSend: function () {
-
+                progress_wrapper.classList.remove("d-none");
+                upload_btn.classList.add("d-none");
+                loading_btn.classList.remove("d-none");
             },
             xhr: function () {
                 const xhr = new window.XMLHttpRequest();
                 xhr.upload.addEventListener('progress', e => {
-                    if (e.lengthComputable) {
-                        const percentProgress = (e.loaded / e.total) * 100;
-                        console.log(percentProgress);
-                        progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success" 
-                role="progressbar" style="width:350px" aria-valuenow="${percentProgress}" aria-valuemin="0" 
-                aria-valuemax="400"></div>`
-                    }
-                });
+
+                    var loaded = e.loaded;
+                    var total = e.total;
+
+                    var percentage_complete = (loaded / total) * 100;
+
+                    progress.setAttribute("style", `width: ${Math.floor(percentage_complete - 3)}%`);
+
+                    progress_status.innerText = `${Math.floor(percentage_complete - 1)}% uploaded.. Finishing upload..`;
+
+                })
                 return xhr
             },
             success: function (response) {
-                console.log(response);
-                uploadForm.reset()
-                //progress_bar.classList.add('not-visible')
-                $('#pleasewait').addClass('d-none');
-                $('#progress').addClass('d-none');
-                $('#message').text("File Uploaded Successfully!!");
+
+                file_input_label.innerText = "Select File";
+
+                $.each(response.data, function (key, value) {
+                    debugger;
+                    if (response.status[key] == "success") {
+                        show_alert(response.data[key] + `    uploaded`, "success", key);
+                    }
+                    else {
+                        show_alert(response.data[key] + `    error uploading file`, "danger", key);
+                    }
+                });
+
+                //show_alert(response.filename + `    file type not supported. Select pdf, word or ppt file only.`, "danger", x);
+
+                progress_wrapper.classList.add("d-none");
+                progress.setAttribute("style", "width: 0%");
+
+                loading_btn.classList.add("d-none");
+                upload_btn.classList.remove("d-none");
             },
-            error: function (err) {
+            error: function (response, err) {
+                debugger;
                 console.log(err);
+                console.log("error");
+                // show_alert(response.responseJSON.filename + `    error uploading file`, "danger", x);
+                // x++;
             },
             cache: false,
             contentType: false,
             processData: false,
         });
+
+
+
+
+        // for (i = 0; i < input_file.files.length; i++) {
+        //     var formData = new FormData();
+        //     formData.append("file", input_file.files[i]);
+
+        //     const media_data = input_file.files[i];
+        //     if (media_data != null) {
+        //         console.log(media_data);
+        //         //progress_bar.classList.remove("not-visible");
+        //         // $('#pleasewait').removeClass('d-none');
+        //         // $('#progress').removeClass('d-none');
+
+        //         //progressBox.classList.remove('not-visible')
+
+        //         progress_wrapper.classList.remove("d-none");
+
+        //         upload_btn.classList.add("d-none");
+        //         loading_btn.classList.remove("d-none");
+        //     }
+
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: '{% url "fileUpload" %}',
+        //         data: formData,
+        //         dataType: 'json',
+        //         beforeSend: function () {
+
+        //         },
+        //         xhr: function () {
+        //             const xhr = new window.XMLHttpRequest();
+        //             xhr.upload.addEventListener('progress', e => {
+
+        //                 var loaded = e.loaded;
+        //                 var total = e.total;
+
+        //                 var percentage_complete = (loaded / total) * 100;
+
+        //                 progress.setAttribute("style", `width: ${Math.floor(percentage_complete)}%`);
+
+        //                 progress_status.innerText = `${Math.floor(percentage_complete)}% uploaded.. Finishing upload..`;
+
+        //             })
+
+        //             // xhr.addEventListener('load', function (e) {
+        //             //     debugger;
+        //             //     if (xhr.status == 200) {
+        //             //         show_alert(input_file.files[i].name + `  uploaded`, "success", i);
+        //             //     }
+        //             //     else {
+        //             //         show_alert("Error Uploading File  " + input_file.files[0].name, "danger", i);
+        //             //     }
+        //             // })
+
+        //             // xhr.upload.addEventListener('progress', e => {
+        //             //     if (e.lengthComputable) {
+        //             //         const percentProgress = (e.loaded / e.total) * 100;
+        //             //         console.log(percentProgress);
+        //             //         progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success" 
+        //             // role="progressbar" style="width:350px" aria-valuenow="${percentProgress}" aria-valuemin="0" 
+        //             // aria-valuemax="400"></div>`
+        //             //     }
+        //             // });
+        //             return xhr
+        //         },
+        //         success: function (response) {
+        //             console.log(response);
+        //             uploadForm.reset()
+
+        //             //progress_bar.classList.add('not-visible')
+        //             // $('#pleasewait').addClass('d-none');
+        //             // $('#progress').addClass('d-none');
+        //             //$('#message').text("File Uploaded Successfully!!");
+
+        //             file_input_label.innerText = "Select File";
+
+        //             if (response.data == "success") {
+        //                 show_alert(response.filename + `    uploaded`, "success", x);
+        //             }
+        //             else {
+        //                 show_alert(response.filename + `    file type not supported. Select pdf, word or ppt file only.`, "danger", x);
+        //             }
+        //             x++;
+        //             if (x == n) {
+        //                 progress_wrapper.classList.add("d-none");
+        //                 progress.setAttribute("style", "width: 0%");
+
+        //                 loading_btn.classList.add("d-none");
+        //                 upload_btn.classList.remove("d-none");
+        //             }
+        //         },
+        //         error: function (response, err) {
+        //             debugger;
+        //             console.log(err);
+        //             console.log("error");
+        //             show_alert(response.responseJSON.filename + `    error uploading file`, "danger", x);
+        //             x++;
+        //         },
+        //         cache: false,
+        //         contentType: false,
+        //         processData: false,
+        //     });
+
+        // }
     });
 
 </script>
