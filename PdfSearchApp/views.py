@@ -364,9 +364,10 @@ def fileUpload(request):
                     print("Pdf File Path: ", pdf_file_path)
                     print("Save File Path: ", save_dir)
 
+                    desc = pytesseract.image_to_string(img_rgb)
                     newdoc = Files(
                         title=title[:-4],
-                        description=pytesseract.image_to_string(img_rgb),
+                        description=desc,
                         file="files/" + new_file_name[:-4] + ".pdf",
                         filetype="image",
                     )
