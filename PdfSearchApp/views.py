@@ -16,7 +16,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from PIL import Image
 from pytesseract import pytesseract
 import cv2
 import ocrmypdf
@@ -346,7 +345,6 @@ def fileUpload(request):
                     )
                     print(output)
 
-                    # extract text from pdf
                     pdf_file_path = (
                         os.path.join(settings.BASE_DIR, "media")
                         + "/"
