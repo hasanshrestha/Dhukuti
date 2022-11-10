@@ -9,7 +9,6 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import subprocess
-from PIL import Image
 
 import pytesseract
 from django.http import JsonResponse
